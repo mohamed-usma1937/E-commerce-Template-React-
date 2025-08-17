@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ProductCard } from '@/components/product-card';
 import productsData from '@/data/products.json';
 import categoriesData from '@/data/categories.json';
+import catalogHero from '@/assets/catalog-hero.jpg';
 import { cn } from '@/lib/utils';
 
 export default function Home() {
@@ -94,7 +95,7 @@ export default function Home() {
             <div className="relative animate-scale-in">
               <div className="relative z-10">
                 <img
-                  src="/api/placeholder/600/500"
+                  src={catalogHero}
                   alt="Hero Product"
                   className="w-full h-auto rounded-3xl shadow-2xl"
                 />
