@@ -22,14 +22,35 @@ export function Footer() {
               Your one-stop destination for the latest tech products. Quality, innovation, and customer satisfaction are our top priorities.
             </p>
             <div className="flex space-x-2">
-              <Button variant="ghost" size="sm" className="rounded-full w-9 h-9 p-0">
-                <Facebook className="h-4 w-4" />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="rounded-full w-9 h-9 p-0"
+                asChild
+              >
+                <a 
+                  href="https://www.facebook.com/share/1B6L7bFjqi/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="h-4 w-4" />
+                </a>
               </Button>
-              <Button variant="ghost" size="sm" className="rounded-full w-9 h-9 p-0">
-                <Twitter className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" className="rounded-full w-9 h-9 p-0">
-                <Instagram className="h-4 w-4" />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="rounded-full w-9 h-9 p-0"
+                asChild
+              >
+                <a 
+                  href="https://www.instagram.com/mohamed.sdike?igsh=Nzlmcm1vaWs3dHll" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="h-4 w-4" />
+                </a>
               </Button>
             </div>
           </div>
@@ -86,15 +107,25 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4" />
-                <span>support@techshop.com</span>
+                <a 
+                  href="mailto:mohamedseddikbouchelaghem@gmail.com"
+                  className="hover:text-primary transition-colors"
+                >
+                  mohamedseddikbouchelaghem@gmail.com
+                </a>
               </div>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <a 
+                  href="tel:+213779154202"
+                  className="hover:text-primary transition-colors"
+                >
+                  +213 779 154 202
+                </a>
               </div>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" />
-                <span>San Francisco, CA</span>
+                <span>Alger Centre, Algérie</span>
               </div>
             </div>
 
@@ -119,9 +150,20 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-          <p className="text-sm text-muted-foreground text-center sm:text-left">
-            © 2024 TechShop. All rights reserved.
-          </p>
+          <div className="text-sm text-muted-foreground text-center sm:text-left space-y-2">
+            <p>© 2024 TechShop. All rights reserved.</p>
+            <p>
+              Développé par{' '}
+              <a 
+                href="https://bouchelaghemmohamed.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-medium"
+              >
+                Bouchelaghem Mohamed
+              </a>
+            </p>
+          </div>
           <div className="flex items-center space-x-4 text-sm text-muted-foreground">
             <Link to="/privacy" className="hover:text-primary transition-colors">
               Privacy

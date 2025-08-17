@@ -11,6 +11,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useToast } from '@/hooks/use-toast';
+import AuthNav from '@/components/auth-nav';
+import AuthQuickNav from '@/components/auth-quick-nav';
 import loginIllustration from '@/assets/login-illustration.jpg';
 
 const loginSchema = z.object({
@@ -66,9 +68,13 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex">
+      <AuthNav />
       {/* Left Side - Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="flex-1 flex items-center justify-center p-8 pt-24">
         <div className="w-full max-w-md space-y-8">
+          {/* Quick Navigation */}
+          <AuthQuickNav />
+          
           {/* Header */}
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold">Welcome back</h1>

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Eye, EyeOff, Lock, Mail, User, Phone, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, User, ArrowRight, CheckCircle, Zap, Shield, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,51 +16,34 @@ import AuthNav from '@/components/auth-nav';
 import AuthQuickNav from '@/components/auth-quick-nav';
 import loginIllustration from '@/assets/login-illustration.jpg';
 
-// Schéma de validation sécurisé avec règles strictes
-const registerSchema = z.object({
+// Schéma de validation simplifié mais sécurisé
+const signupSchema = z.object({
   firstName: z.string()
     .min(2, 'First name must be at least 2 characters')
-    .max(50, 'First name must be less than 50 characters')
+    .max(30, 'First name must be less than 30 characters')
     .regex(/^[a-zA-Z\s]+$/, 'First name can only contain letters and spaces'),
-  
-  lastName: z.string()
-    .min(2, 'Last name must be at least 2 characters')
-    .max(50, 'Last name must be less than 50 characters')
-    .regex(/^[a-zA-Z\s]+$/, 'Last name can only contain letters and spaces'),
   
   email: z.string()
     .email('Please enter a valid email address')
     .min(5, 'Email must be at least 5 characters')
-    .max(100, 'Email must be less than 100 characters')
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email format'),
-  
-  phone: z.string()
-    .min(10, 'Phone number must be at least 10 digits')
-    .max(15, 'Phone number must be less than 15 digits')
-    .regex(/^[\+]?[0-9\s\-\(\)]+$/, 'Invalid phone number format'),
+    .max(100, 'Email must be less than 100 characters'),
   
   password: z.string()
     .min(8, 'Password must be at least 8 characters')
     .max(128, 'Password must be less than 128 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
-      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'),
-  
-  confirmPassword: z.string(),
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
   
   acceptTerms: z.boolean()
     .refine((val) => val === true, 'You must accept the terms and conditions'),
   
   acceptMarketing: z.boolean().optional(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
 });
 
-type RegisterFormData = z.infer<typeof registerSchema>;
+type SignupFormData = z.infer<typeof signupSchema>;
 
-export default function Register() {
+export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
@@ -72,15 +55,12 @@ export default function Register() {
   const register = useAuthStore((state) => state.register);
   const { toast } = useToast();
 
-  const form = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       firstName: '',
-      lastName: '',
       email: '',
-      phone: '',
       password: '',
-      confirmPassword: '',
       acceptTerms: false,
       acceptMarketing: false,
     },
@@ -96,7 +76,6 @@ export default function Register() {
     if (/[a-z]/.test(password)) score++;
     if (/[A-Z]/.test(password)) score++;
     if (/\d/.test(password)) score++;
-    if (/[@$!%*?&]/.test(password)) score++;
 
     switch (score) {
       case 0:
@@ -113,10 +92,6 @@ export default function Register() {
         color = 'text-yellow-500';
         break;
       case 4:
-        feedback = 'Good';
-        color = 'text-blue-500';
-        break;
-      case 5:
         feedback = 'Strong';
         color = 'text-green-500';
         break;
@@ -125,44 +100,34 @@ export default function Register() {
     setPasswordStrength({ score, feedback, color });
   };
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
     try {
-      // Validation de sécurité supplémentaire côté client
-      if (data.password !== data.confirmPassword) {
-        toast({
-          title: "Validation Error",
-          description: "Passwords do not match",
-          variant: "destructive",
-        });
-        return;
-      }
-
       const success = await register({
         email: data.email,
         password: data.password,
         firstName: data.firstName,
-        lastName: data.lastName,
-        phone: data.phone,
+        lastName: '',
+        phone: '',
       });
       
       if (success) {
         toast({
-          title: "Account created successfully!",
-          description: "Welcome to our community. You can now start shopping!",
+          title: "Welcome aboard! 🎉",
+          description: "Your account has been created successfully. Start exploring our products!",
         });
         navigate('/');
       } else {
         toast({
-          title: "Registration failed",
-          description: "An account with this email already exists. Please try a different email.",
+          title: "Signup failed",
+          description: "An account with this email already exists. Please try a different email or sign in.",
           variant: "destructive",
         });
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Signup error:', error);
       toast({
-        title: "Registration failed",
+        title: "Signup failed",
         description: "An unexpected error occurred. Please try again later.",
         variant: "destructive",
       });
@@ -176,75 +141,67 @@ export default function Register() {
       <AuthNav />
       {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center p-8 pt-24 overflow-y-auto">
-        <div className="w-full max-w-lg space-y-8">
+        <div className="w-full max-w-md space-y-8">
           {/* Quick Navigation */}
           <AuthQuickNav />
           
           {/* Header */}
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold">Create your account</h1>
+            <h1 className="text-3xl font-bold">Join us today</h1>
             <p className="text-muted-foreground">
-              Join our community and start your shopping journey
+              Quick signup to start your shopping adventure
             </p>
           </div>
 
-          {/* Registration Form */}
+          {/* Benefits Cards */}
+          <div className="grid grid-cols-1 gap-3">
+            <div className="flex items-center space-x-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
+              <Gift className="h-5 w-5 text-primary" />
+              <span className="text-sm font-medium">Exclusive deals & discounts</span>
+            </div>
+            <div className="flex items-center space-x-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
+              <Zap className="h-5 w-5 text-primary" />
+              <span className="text-sm font-medium">Fast checkout & delivery</span>
+            </div>
+            <div className="flex items-center space-x-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
+              <Shield className="h-5 w-5 text-primary" />
+              <span className="text-sm font-medium">Secure & protected shopping</span>
+            </div>
+          </div>
+
+          {/* Signup Form */}
           <Card>
             <CardHeader>
-              <CardTitle>Sign up</CardTitle>
+              <CardTitle>Quick signup</CardTitle>
               <CardDescription>
-                Fill in your details to create your account
+                Create your account in just a few steps
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  {/* Name Fields */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>First Name</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                {...field}
-                                placeholder="John"
-                                className="pl-10"
-                                autoComplete="given-name"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Last Name</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                {...field}
-                                placeholder="Doe"
-                                className="pl-10"
-                                autoComplete="family-name"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  {/* First Name Field */}
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>First Name</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              {...field}
+                              placeholder="John"
+                              className="pl-10"
+                              autoComplete="given-name"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   {/* Email Field */}
                   <FormField
@@ -259,32 +216,9 @@ export default function Register() {
                             <Input
                               {...field}
                               type="email"
-                              placeholder="john.doe@example.com"
+                              placeholder="john@example.com"
                               className="pl-10"
                               autoComplete="email"
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Phone Field */}
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone Number</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              {...field}
-                              placeholder="+1 (555) 123-4567"
-                              className="pl-10"
-                              autoComplete="tel"
                             />
                           </div>
                         </FormControl>
@@ -335,7 +269,7 @@ export default function Register() {
                           <div className="mt-2 space-y-2">
                             <div className="flex items-center space-x-2">
                               <div className="flex space-x-1">
-                                {[1, 2, 3, 4, 5].map((level) => (
+                                {[1, 2, 3, 4].map((level) => (
                                   <div
                                     key={level}
                                     className={`h-2 w-8 rounded-full ${
@@ -350,71 +284,14 @@ export default function Register() {
                                 {passwordStrength.feedback}
                               </span>
                             </div>
-                            <div className="text-xs text-muted-foreground space-y-1">
-                              <p>Password must contain:</p>
-                              <ul className="list-disc list-inside space-y-1">
-                                <li className={/[a-z]/.test(field.value) ? 'text-green-600' : 'text-red-600'}>
-                                  At least one lowercase letter
-                                </li>
-                                <li className={/[A-Z]/.test(field.value) ? 'text-green-600' : 'text-red-600'}>
-                                  At least one uppercase letter
-                                </li>
-                                <li className={/\d/.test(field.value) ? 'text-green-600' : 'text-red-600'}>
-                                  At least one number
-                                </li>
-                                <li className={/[@$!%*?&]/.test(field.value) ? 'text-green-600' : 'text-red-600'}>
-                                  At least one special character (@$!%*?&)
-                                </li>
-                                <li className={field.value.length >= 8 ? 'text-green-600' : 'text-red-600'}>
-                                  At least 8 characters long
-                                </li>
-                              </ul>
-                            </div>
                           </div>
                         )}
                       </FormItem>
                     )}
                   />
 
-                  {/* Confirm Password Field */}
-                  <FormField
-                    control={form.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              {...field}
-                              type={showConfirmPassword ? 'text' : 'password'}
-                              placeholder="Confirm your password"
-                              className="pl-10 pr-10"
-                              autoComplete="new-password"
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            >
-                              {showConfirmPassword ? (
-                                <EyeOff className="h-4 w-4 text-muted-foreground" />
-                              ) : (
-                                <Eye className="h-4 w-4 text-muted-foreground" />
-                              )}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
                   {/* Terms and Marketing */}
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <FormField
                       control={form.control}
                       name="acceptTerms"
@@ -456,8 +333,7 @@ export default function Register() {
                           </FormControl>
                           <div className="space-y-1 leading-none">
                             <FormLabel className="text-sm text-muted-foreground">
-                              I would like to receive marketing communications about new products, 
-                              special offers, and updates (optional)
+                              Send me updates about new products and special offers
                             </FormLabel>
                           </div>
                         </FormItem>
@@ -538,6 +414,16 @@ export default function Register() {
                   Sign in
                 </Link>
               </p>
+
+              <p className="mt-2 text-center text-sm text-muted-foreground">
+                Need more details?{' '}
+                <Link
+                  to="/auth/register"
+                  className="font-medium text-primary hover:underline"
+                >
+                  Complete registration
+                </Link>
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -548,13 +434,13 @@ export default function Register() {
         <div className="max-w-md text-center space-y-6">
           <img
             src={loginIllustration}
-            alt="Registration illustration"
+            alt="Signup illustration"
             className="w-full h-auto rounded-2xl shadow-2xl"
           />
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold">Join our community</h2>
+            <h2 className="text-2xl font-bold">Start shopping today</h2>
             <p className="text-muted-foreground">
-              Create your account to access exclusive deals, track your orders, and enjoy a personalized shopping experience.
+              Join thousands of happy customers and discover amazing products at unbeatable prices.
             </p>
           </div>
         </div>

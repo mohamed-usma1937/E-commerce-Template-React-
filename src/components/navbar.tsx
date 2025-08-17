@@ -187,9 +187,14 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button asChild size="sm" className="rounded-xl">
-                <Link to="/auth">Sign In</Link>
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button variant="ghost" asChild size="sm" className="rounded-xl">
+                  <Link to="/auth/login">Login</Link>
+                </Button>
+                <Button asChild size="sm" className="rounded-xl">
+                  <Link to="/auth">Sign Up</Link>
+                </Button>
+              </div>
             )}
           </div>
 
@@ -279,14 +284,25 @@ export function Navbar() {
                     </Link>
                   </div>
                 ) : (
-                  <Button 
-                    asChild 
-                    size="sm" 
-                    className="rounded-xl"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <Link to="/auth">Sign In</Link>
-                  </Button>
+                  <div className="flex flex-col space-y-2 w-full">
+                    <Button 
+                      variant="ghost"
+                      asChild 
+                      size="sm" 
+                      className="rounded-xl w-full"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Link to="/auth/login">Login</Link>
+                    </Button>
+                    <Button 
+                      asChild 
+                      size="sm" 
+                      className="rounded-xl w-full"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Link to="/auth">Sign Up</Link>
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
