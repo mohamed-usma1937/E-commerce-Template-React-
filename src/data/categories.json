@@ -1,0 +1,37 @@
+[
+  {
+    "id": "smartphones",
+    "name": "Smartphones",
+    "description": "Latest smartphones from top brands",
+    "image": "/api/placeholder/300/200",
+    "productCount": 2
+  },
+  {
+    "id": "laptops",
+    "name": "Laptops",
+    "description": "High-performance laptops and ultrabooks",
+    "image": "/api/placeholder/300/200",
+    "productCount": 2
+  },
+  {
+    "id": "tablets",
+    "name": "Tablets",
+    "description": "Tablets for work and entertainment",
+    "image": "/api/placeholder/300/200",
+    "productCount": 1
+  },
+  {
+    "id": "audio",
+    "name": "Audio",
+    "description": "Headphones, earbuds, and speakers",
+    "image": "/api/placeholder/300/200",
+    "productCount": 2
+  },
+  {
+    "id": "wearables",
+    "name": "Wearables",
+    "description": "Smart watches and fitness trackers",
+    "image": "/api/placeholder/300/200",
+    "productCount": 1
+  }
+]
